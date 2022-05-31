@@ -9,4 +9,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT["python","locust -f /usr/src/app/locust-${TEST_TYPE}-test.py --headless --only-summary --html /usr/src/app/output/output-${TEST_TYPE}.html"]
+ENTRYPOINT /usr/src/app/entrypoint.sh
