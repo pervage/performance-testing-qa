@@ -1,16 +1,31 @@
-from locust import HttpUser, TaskSet, task, constant, LoadTestShape
+import logging
+import random
+import json
+from locust import HttpUser, task, constant, LoadTestShape, SequentialTaskSet
+
+queries_list = []
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
 
-class DemoTaskSet(TaskSet):
+class UserQuery(SequentialTaskSet):
 
     @task
-    def demo_test(self):
-        self.client.get("/api/users?page=2")
+    def demo_post_test(self):
+        post_url = "/api/users"
+
+        request_body = {
+            "query": random.choice(queries_list),
+            "job": "leader"
+        }
+        response = self.client.post(post_url, request_body, name='Entitle Query')
+        jsonobj = json.loads(response.json())
+        logging.info("Response Count is %s", len(jsonobj["c"]))
 
 
 class DemoHttpUser(HttpUser):
-    tasks = [DemoTaskSet]
+    tasks = [UserQuery]
     constant(2)
+    host = "https://reqres.in"
 
 
 class StagesShape(LoadTestShape):
