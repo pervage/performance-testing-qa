@@ -2,23 +2,23 @@
   "loadTestData": {
     "filterQuery": [
       {
-        "query": "MATCH (c:ClientContact1) WHERE date(apoc.map.get(apoc.convert.fromJsonMap(c.properties),\"dateadded\", null)) > date(\"2021-09-30\") RETURN c LIMIT 10",
-        "domain": "client_contact",
+        "query": "",
+        "domain": "",
         "testCaseId": "TC-FILTER0001"
       },
       {
-        "query": "MATCH (c:ClientContact1) WHERE date(apoc.map.get(apoc.convert.fromJsonMap(c.properties),\"dateadded\", null)) > date(\"2021-09-30\") RETURN c LIMIT 10",
-        "domain": "client_contact",
+        "query": "",
+        "domain": "",
         "testCaseId": "TC-FILTER0002"
       }
     ],
     "countQuery": [
       {
-        "query": "MATCH (c:JobSubmission1) WHERE c[\"joborder.id\"]=\"233607\" and c[\"status\"]=\"Linked\" RETURN count(*) as count",
+        "query": "",
         "testCaseId": "TC-COUNT0001"
       },
       {
-        "query": "MATCH (c:JobSubmission1) WHERE c[\"joborder.id\"]=\"233607\" and c[\"status\"]=\"Linked\" RETURN count(*) as count",
+        "query": "",
         "testCaseId": "TC-COUNT0002"
       }
     ]
