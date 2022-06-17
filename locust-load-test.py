@@ -1,28 +1,44 @@
-import logging
-import random
 import json
+import logging
+import os
 from locust import HttpUser, task, constant, LoadTestShape, SequentialTaskSet
 
-queries_list = []
 logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+json_file = open(os.path.abspath("perf-test-data.json"))
+json_data = json.load(json_file)
 
 
 class UserQuery(SequentialTaskSet):
 
     @task
-    def demo_post_test(self):
-        post_url = "/api/users"
+    def filter_query_test(self):
+        for body_data in json_data["loadTestData"]["filterQuery"]:
+            post_url = "/generic/filter-query"
+            headers = {'content-type': 'application/json'}
+            request_body = {
+                "query": body_data["query"],
+                "domain": body_data["domain"]
+            }
+            print(request_body)
+            response = self.client.post(post_url, json=request_body, name=body_data["testCaseId"], headers=headers)
+            jsonobj = response.json()
+            logging.info("Response Count is %s", len(jsonobj["c"]))
 
-        request_body = {
-            "query": random.choice(queries_list),
-            "job": "leader"
-        }
-        response = self.client.post(post_url, request_body, name='Entitle Query')
-        jsonobj = json.loads(response.json())
-        logging.info("Response Count is %s", len(jsonobj["c"]))
+    @task
+    def count_query_test(self):
+        for body_data in json_data["loadTestData"]["countQuery"]:
+            post_url = "/generic/count"
+            headers = {'content-type': 'application/json'}
+            request_body = {
+                "query": body_data["query"]
+            }
+            print(request_body)
+            response = self.client.post(post_url, json=request_body, name=body_data["testCaseId"], headers=headers)
+            jsonobj = response.json()
+            logging.info("Response Count is %s", len(jsonobj["c"]))
 
 
-class DemoHttpUser(HttpUser):
+class LoadTestUser(HttpUser):
     tasks = [UserQuery]
     constant(2)
     host = "https://reqres.in"
